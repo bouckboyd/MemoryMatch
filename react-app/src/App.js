@@ -48,11 +48,14 @@ function App() {
 
   function onButtonClick(rowIndex, colIndex) {
 
-    setFaceup(prevArray => {
-      const updatedArray = prevArray.map(row => [...row])
-      updatedArray[rowIndex][colIndex] = !faceup[rowIndex][colIndex]
-      return updatedArray
-    })
+    if (cardsRevealed < 2 && !faceup[rowIndex][colIndex]) {
+      setFaceup(prevArray => {
+        const updatedArray = prevArray.map(row => [...row])
+        updatedArray[rowIndex][colIndex] = true
+        return updatedArray
+      })
+      setCardsRevealed(cardsRevealed + 1)
+    }
 
     //faceup[rowIndex][colIndex] = !faceup[rowIndex][colIndex]
     console.log('full matrix: ' + faceup)
@@ -63,9 +66,9 @@ function App() {
      {faceup === null ? <p>Loading...</p> : 
       <div className='Board'>
       {console.log('rerender lol')}
-        <h1>Memory Match</h1>
+        <br/>
         <div style={{alignSelf:'center'}}>
-          <img height='100px' width='100px' src="https://cdn3.iconfinder.com/data/icons/letters-and-numbers-1/32/letter_M_red-1024.png"></img>
+          <img height='150px' width='150px' src="https://cdn3.iconfinder.com/data/icons/letters-and-numbers-1/32/letter_M_red-1024.png"></img>
         </div>
         <br/>
         {
@@ -82,6 +85,10 @@ function App() {
         <br/>
         <div className='PlayerText' >Player 1: 0</div>
         <div className='PlayerText' >Player 2: 0</div>
+        <br/>
+        <div style={{display: 'flex'}}>
+          { cardsRevealed == 2 ? <button className='NextButton' >Next Turn</button> : <></> }
+        </div>
       </div>
      }
     </> 

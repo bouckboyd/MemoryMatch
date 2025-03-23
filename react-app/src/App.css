@@ -11,6 +11,7 @@
   width: 74px;
   height: 102px;
   background-image: url('./MMCard2.png');
+  background-color: blue;
   cursor:pointer;
 }
 
@@ -25,6 +26,22 @@
 }
 
 .Card:hover {
+  border-color: yellow;
+  transition: 0.3s;
+}
+
+.NextButton {
+  border: solid;
+  border-color: red;
+  background-color: darkred;
+  width: 150px;
+  height: 50px;
+  font-size: 24px;
+  color: white;
+  cursor:pointer;
+}
+
+.NextButton:hover {
   border-color: yellow;
   transition: 0.3s;
 }
