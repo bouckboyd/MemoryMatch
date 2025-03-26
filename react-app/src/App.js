@@ -24,7 +24,15 @@ function App() {
 
   const [cardsRevealed, setCardsRevealed] = useState(0)
 
+  const [revealedNumbers, setRevealedNumbers] = useState([0, 0])
+
   const [faceup, setFaceup] = useState(null)
+
+  const [matchMade, setMatchMade] = useState(false)
+
+  // player scores
+  const [score1, setScore1] = useState(0)
+  const [score2, setScore2] = useState(0)
 
   function fetchDimensions() {
     fetch('/dimensions')
@@ -54,11 +62,31 @@ function App() {
         updatedArray[rowIndex][colIndex] = true
         return updatedArray
       })
+      revealedNumbers[cardsRevealed] = testVar[rowIndex][colIndex]
       setCardsRevealed(cardsRevealed + 1)
+
+      if (cardsRevealed + 1 === 2) { // +1 is to adapt for asynchronous setting of cardsRevealed
+        if (revealedNumbers[0] === revealedNumbers[1]) {
+          console.log('if statement entered')
+          turn === 1 ? setScore1(score1 + 1) : setScore2(score2 + 2)
+          setMatchMade(true)
+        } else {
+          setMatchMade(false)
+        }
+      }
+
     }
 
     //faceup[rowIndex][colIndex] = !faceup[rowIndex][colIndex]
-    console.log('full matrix: ' + faceup)
+    //console.log('full matrix: ' + faceup)
+  }
+
+  function handleNextButton() {
+
+    if (!matchMade) {
+      turn === 1 ? setTurn(2) : setTurn(1)
+    }
+
   }
 
   return (
@@ -83,11 +111,11 @@ function App() {
         ))
         }
         <br/>
-        <div className='PlayerText' >Player 1: 0</div>
-        <div className='PlayerText' >Player 2: 0</div>
+        <div className='PlayerText' >Player 1: {score1}</div>
+        <div className='PlayerText' >Player 2: {score2}</div>
         <br/>
         <div style={{display: 'flex'}}>
-          { cardsRevealed == 2 ? <button className='NextButton' >Next Turn</button> : <></> }
+          { cardsRevealed == 2 ? <button className='NextButton' onClick={() => handleNextButton()} >Next Turn</button> : <></> }
         </div>
       </div>
      }
