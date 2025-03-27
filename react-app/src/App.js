@@ -1,5 +1,6 @@
 import './App.css'
 import React, {useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function Card({ number, faceup, handleClick }) {
   console.log('faceup: ' + faceup)
@@ -21,6 +22,8 @@ function Card({ number, faceup, handleClick }) {
 
 function App() {
 
+  const navigate = useNavigate()
+
   const [testVar, setTestVar] = useState(null)
 
   const [turn, setTurn] = useState(1)
@@ -34,6 +37,8 @@ function App() {
 
   const [matchMade, setMatchMade] = useState(false)
 
+  const [remainingMatches, setRemainingMatches] = useState(null)
+
   // player scores
   const [score1, setScore1] = useState(0)
   const [score2, setScore2] = useState(0)
@@ -43,6 +48,7 @@ function App() {
     .then(res => res.json())
     .then(data => { 
       setTestVar(data)
+      setRemainingMatches(data.length * data[0].length / 2)
       
       // initialize every element in faceup to 'false'
       const newValues = data.map((row, rowIndex) => (
@@ -72,7 +78,7 @@ function App() {
 
       if (cardsRevealed + 1 === 2) { // +1 is to adapt for asynchronous setting of cardsRevealed
         if (revealedNumbers[0] === revealedNumbers[1]) {
-          console.log('if statement entered')
+          setRemainingMatches(remainingMatches - 1)
           turn === 1 ? setScore1(score1 + 1) : setScore2(score2 + 1)
           setMatchMade(true)
         } else {
@@ -100,6 +106,10 @@ function App() {
     setRevealedNumbers([0, 0])
     setRevealedIndex([[-1, -1], [-1, -1]])
     setCardsRevealed(0)
+
+    if (remainingMatches === 0) {
+      navigate('./game-over')
+    }
 
   }
 
@@ -133,7 +143,7 @@ function App() {
         <div className='PlayerText' >Player 2 - {score2}</div>
         <br/>
         <div style={{display: 'flex'}}>
-          { cardsRevealed == 2 ? <button className='NextButton' onClick={() => handleNextButton()} >Next Turn</button> : <></> }
+          { cardsRevealed == 2 ? <button className='NextButton' onClick={() => handleNextButton()} >Next</button> : <></> }
         </div>
       </div>
      }
