@@ -7,10 +7,13 @@ function Card({ number, faceup, handleClick }) {
   return (
     <>
     {
-      faceup ? 
+      faceup === 'true' ? 
         <button className={'CardFaceup'} onClick={handleClick}>{number}</button>
       :
-        <button className={'Card'} onClick={handleClick} />
+        faceup === 'false' ?
+          <button className={'Card'} onClick={handleClick} />
+        :
+          <button className={'DeadCard'} />
     }
     </>
   )
@@ -25,6 +28,7 @@ function App() {
   const [cardsRevealed, setCardsRevealed] = useState(0)
 
   const [revealedNumbers, setRevealedNumbers] = useState([0, 0])
+  const [revealedIndex, setRevealedIndex] = useState([[-1, -1], [-1, -1]])
 
   const [faceup, setFaceup] = useState(null)
 
@@ -40,9 +44,9 @@ function App() {
     .then(data => { 
       setTestVar(data)
       
-      // initialize every element in faceup to false
+      // initialize every element in faceup to 'false'
       const newValues = data.map((row, rowIndex) => (
-        row.map((item, colIndex) => {return false})
+        row.map((item, colIndex) => {return 'false'})
       ))
       setFaceup(newValues)
 
@@ -56,19 +60,20 @@ function App() {
 
   function onButtonClick(rowIndex, colIndex) {
 
-    if (cardsRevealed < 2 && !faceup[rowIndex][colIndex]) {
+    if (cardsRevealed < 2 && faceup[rowIndex][colIndex] === 'false') {
       setFaceup(prevArray => {
         const updatedArray = prevArray.map(row => [...row])
-        updatedArray[rowIndex][colIndex] = true
+        updatedArray[rowIndex][colIndex] = 'true'
         return updatedArray
       })
       revealedNumbers[cardsRevealed] = testVar[rowIndex][colIndex]
+      revealedIndex[cardsRevealed] = [rowIndex, colIndex]
       setCardsRevealed(cardsRevealed + 1)
 
       if (cardsRevealed + 1 === 2) { // +1 is to adapt for asynchronous setting of cardsRevealed
         if (revealedNumbers[0] === revealedNumbers[1]) {
           console.log('if statement entered')
-          turn === 1 ? setScore1(score1 + 1) : setScore2(score2 + 2)
+          turn === 1 ? setScore1(score1 + 1) : setScore2(score2 + 1)
           setMatchMade(true)
         } else {
           setMatchMade(false)
@@ -83,9 +88,18 @@ function App() {
 
   function handleNextButton() {
 
-    if (!matchMade) {
+    if (matchMade) {
+      faceup[revealedIndex[0][0]][revealedIndex[0][1]] = 'dead'
+      faceup[revealedIndex[1][0]][revealedIndex[1][1]] = 'dead'
+    } else {
       turn === 1 ? setTurn(2) : setTurn(1)
+      faceup[revealedIndex[0][0]][revealedIndex[0][1]] = 'false'
+      faceup[revealedIndex[1][0]][revealedIndex[1][1]] = 'false'
     }
+
+    setRevealedNumbers([0, 0])
+    setRevealedIndex([[-1, -1], [-1, -1]])
+    setCardsRevealed(0)
 
   }
 
@@ -111,8 +125,12 @@ function App() {
         ))
         }
         <br/>
-        <div className='PlayerText' >Player 1: {score1}</div>
-        <div className='PlayerText' >Player 2: {score2}</div>
+        <div style={{'font-size': '30px', 'color': 'white'}}>
+          Player {turn}'s Turn
+        </div>
+        <br/>
+        <div className='PlayerText' >Player 1 - {score1}</div>
+        <div className='PlayerText' >Player 2 - {score2}</div>
         <br/>
         <div style={{display: 'flex'}}>
           { cardsRevealed == 2 ? <button className='NextButton' onClick={() => handleNextButton()} >Next Turn</button> : <></> }
