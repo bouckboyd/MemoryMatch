@@ -1,5 +1,5 @@
 import './App.css'
-import React, {useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function Card({ number, faceup, handleClick }) {
@@ -108,6 +108,22 @@ function App() {
     setCardsRevealed(0)
 
     if (remainingMatches === 0) {
+
+      const data = {
+        score1, 
+        score2
+      }
+
+      fetch('/final-score', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        }, 
+        body: JSON.stringify(data)
+      })
+      .catch(error => { console.error('ERROR App.js:', error) })
+
       navigate('./game-over')
     }
 
