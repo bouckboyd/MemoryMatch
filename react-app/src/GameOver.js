@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
+import { useNavigate } from 'react-router-dom';
 
 function GameOver() {
+
+    const navigate = useNavigate()
 
     const [score, setScore] = useState(0)
 
@@ -33,7 +36,7 @@ function GameOver() {
         <div style={{fontSize: '32px', color:'yellow'}}>Score</div>
         <div style={{fontSize: '48px', color:'white'}}>{score[0]} - {score[1]}</div>
         <br/>
-        <button className='NextButton'>Play Again</button>
+        <button className='NextButton' onClick={() => navigate('/MemoryMatch')}>Play Again</button>
     </div>
 
 }
