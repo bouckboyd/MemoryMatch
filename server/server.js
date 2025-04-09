@@ -6,6 +6,8 @@ const app = express()
 app.use(express.json())
 app.use(cors()) 
 
+app.use(express.static(path.join(__dirname, 'react-app/build')))
+
 let finalScore
 let board = [[1, 2][1, 2]] // this initial value will be replaced
 
