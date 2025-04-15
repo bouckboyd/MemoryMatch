@@ -20,11 +20,11 @@ function Card({ number, faceup, handleClick }) {
   )
 }  
 
-function Game() {
+function Game({ numberBoard, returnScore }) {
 
-  const navigate = useNavigate()
+  //const navigate = useNavigate()
 
-  const [testVar, setTestVar] = useState(null)
+  //const [testVar, setTestVar] = useState(null)
 
   const [turn, setTurn] = useState(1)
 
@@ -47,7 +47,7 @@ function Game() {
     fetch('/dimensions')
     .then(res => res.json())
     .then(data => { 
-      setTestVar(data)
+      //setTestVar(data)
       setRemainingMatches(data.length * data[0].length / 2)
       
       // initialize every element in faceup to 'false'
@@ -61,7 +61,16 @@ function Game() {
   }
 
   useEffect(() => {
-    fetchDimensions() 
+    //fetchDimensions() 
+
+    setRemainingMatches(numberBoard.length * numberBoard[0].length / 2)
+      
+      // initialize every element in faceup to 'false'
+      const newValues = numberBoard.map((row, rowIndex) => (
+        row.map((item, colIndex) => {return 'false'})
+      ))
+      setFaceup(newValues)
+
   }, [])
 
   function onButtonClick(rowIndex, colIndex) {
@@ -72,7 +81,7 @@ function Game() {
         updatedArray[rowIndex][colIndex] = 'true'
         return updatedArray
       })
-      revealedNumbers[cardsRevealed] = testVar[rowIndex][colIndex]
+      revealedNumbers[cardsRevealed] = numberBoard[rowIndex][colIndex]
       revealedIndex[cardsRevealed] = [rowIndex, colIndex]
       setCardsRevealed(cardsRevealed + 1)
 
@@ -114,6 +123,9 @@ function Game() {
         score2
       }
 
+      returnScore(data)
+
+      /*
       fetch('/final-score', {
         method: 'POST', 
         headers: {
@@ -123,8 +135,9 @@ function Game() {
         body: JSON.stringify(data)
       })
       .catch(error => { console.error('ERROR App.js:', error) })
+      */
 
-      navigate('/MemoryMatch/game-over')
+      //navigate('/MemoryMatch/game-over')
     }
 
   }
@@ -144,7 +157,7 @@ function Game() {
           <div style={{display:"flex"}}>
             {
             row.map((item, colIndex) => (
-              <Card number={testVar[rowIndex][colIndex]} faceup={item} handleClick={() => onButtonClick(rowIndex, colIndex)}/>
+              <Card number={numberBoard[rowIndex][colIndex]} faceup={item} handleClick={() => onButtonClick(rowIndex, colIndex)}/>
             ))
             }
           </div>

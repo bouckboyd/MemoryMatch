@@ -3,9 +3,9 @@ import './Menu.css';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Menu() {
+function Menu({ returnDimensions }) {
 
-    const navigate = useNavigate()
+    //const navigate = useNavigate()
 
     // Declare state for the row value
     const [rowValue, setRowValue] = useState(6);
@@ -23,6 +23,9 @@ function Menu() {
 
         const data = {rowValue, colValue}
 
+        returnDimensions(data)
+
+        /*
         fetch('/selected-dimensions', {
             method: 'POST', 
             headers: {
@@ -32,8 +35,9 @@ function Menu() {
             body: JSON.stringify(data)
           })
           .catch(error => { console.error('ERROR App.js:', error) })
+          */
 
-        navigate('/MemoryMatch/game')
+        //navigate('/MemoryMatch/game')
     }
 
     return (
@@ -63,7 +67,8 @@ function Menu() {
                 onChange={handleColChange} // Update the state when the slider value changes
             /> 
             <br/><br/>
-            <button className='NextButton' onClick={handleClick}>Play</button>
+            {console.log('Menu Rendered')}
+            <button className='NextButton' onClick={() => returnDimensions(rowValue, colValue)}>Play</button>
         </div>
     );
 }
